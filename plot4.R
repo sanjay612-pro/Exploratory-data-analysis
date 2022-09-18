@@ -1,0 +1,32 @@
+#Reading the database.
+EPC <- read.table("household_power_consumption.txt", header = T, 
+       sep = ";", na.strings = "?")
+
+#Getting only the data from the dates 2007-02-01 and 2007-02-02.
+EPC <- subset(EPC, Date %in% c("1/2/2007","2/2/2007"))
+
+#Converting the date.
+EPC$Date <- as.Date(EPC$Date, format = "%d/%m/%Y")
+date_time <- paste(as.Date(data1$Date), data1$Time)
+EPC$date_time <- as.POSIXct(date_time)
+
+#Setting the layout of the plot.
+par(mfrow=c(2,2), mar=c(4,4,2,1), oma=c(0,0,2,0))
+
+#Generating the plot.
+plot(EPC$Global_active_power ~ EPC$date_time, type="l", 
+       ylab="Global Active Power", xlab="")
+plot(EPC$Voltage ~ EPC$date_time, type="l", 
+       ylab="Voltage", xlab="datetime")
+plot(EPC$Sub_metering_1 ~ EPC$date_time, type="l", 
+       ylab="Energy sub metering", xlab="")
+lines(EPC$Sub_metering_2 ~ EPC$date_time,col='Red')
+lines(EPC$Sub_metering_3 ~ EPC$date_time,col='Blue')
+legend("topright", col=c("black", "red", "blue"), lty=1, lwd=2, bty="n",
+         legend=c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+plot(EPC$Global_reactive_power ~ EPC$date_time, type="l", 
+       ylab="Global_reactive_power",xlab="datetime")
+
+#Creating the .png file of the plot.
+dev.copy(png, file = "plot4.png", height = 480, width = 480)
+dev.off()
